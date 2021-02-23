@@ -25,10 +25,9 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker images
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo:latest
       - echo Writing image definitions file...
-      - printf '[{"name":"nodejs-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"nodejs-container","imageUri":"%s"}]' 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo:latest > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
