@@ -10,6 +10,8 @@ phases:
       - aws --version
       - $(aws ecr get-login --region us-west-2 --no-include-email)
       - REPOSITORY_URI=951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - docker --version
   build:
     commands:
@@ -17,14 +19,16 @@ phases:
       - echo Building the Docker image...
       - docker build -t nodejs-repo-ecr:latest .
       - echo Build successful 
-      - docker tag nodejs-repo-ecr:latest 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker images
-      - docker push 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo
-      - printf '[{"name":"nodejs-container","imageUri":"%s"}]' 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo > imagedefinitions.json
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - printf '[{"name":"nodejs-container","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
