@@ -19,7 +19,7 @@ phases:
       - echo Building the Docker image...
       - docker build -t nodejs-repo-ecr:latest .
       - echo Build successful 
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag nodejs-repo-ecr:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
