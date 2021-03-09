@@ -8,24 +8,23 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - $(aws ecr get-login --region us-west-2 --no-include-email)
-      - REPOSITORY_URI=951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-app-repo
+      - $(aws ecr get-login --region us-east-1 --no-include-email)
+      - REPOSITORY_URI=501886171881.dkr.ecr.us-east-1.amazonaws.com/nodejs-repo-ecr
       - docker --version
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t nodejs-app-repo:latest .
+      - docker build -t nodejs-repo-ecr:latest .
       - echo Build successful 
-      - docker tag nodejs-app-repo:latest 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodejs-app-repo:latest
+      - docker tag nodejs-repo-ecr:latest 501886171881.dkr.ecr.us-east-1.amazonaws.com/nodejs-repo-ecr
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker images
-      - docker push 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodejs-app-repo:latest
-      - echo Writing image definitions file...
-      - printf '[{"name":"nodejs-container","imageUri":"%s"}]' 951721031341.dkr.ecr.us-west-2.amazonaws.com/nodesjs-demo:latest > imagedefinitions.json
+      - docker push 501886171881.dkr.ecr.us-east-1.amazonaws.com/nodejs-repo-ecr
+      - printf '[{"name":"nodejs-container","imageUri":"%s"}]' 501886171881.dkr.ecr.us-east-1.amazonaws.com/nodejs-repo-ecr > imagedefinitions.json
       - cat imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
